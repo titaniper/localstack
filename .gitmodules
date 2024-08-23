@@ -1,0 +1,3 @@
+[submodule "projects/aws-ui"]
+	path = projects/aws-ui
+	url = git@github.com:titaniper/aws-ui.git

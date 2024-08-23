@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  localstack:
+    image: localstack/localstack:latest
+    # image: localstack/localstack-full:0.11.6
+    environment:
+      - SERVICES=s3,dynamodb,ses
+      - DEBUG=1
+      # - DATA_DIR=/tmp/localstack/data
+      - LAMBDA_EXECUTOR=docker
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - START_WEB=1
+    ports:
+      - "4566:4566"
+      - "8232:8080" # LocalStack Web Application
+    volumes:
+      # 컨테이너 재시작 시에도 데이터가 유지되도록 볼륨 마운트
+      # - "./data:/tmp/localstack"
+      - "./data:/var/lib/localstack"
+      # 일부 LocalStack 서비스(예: Lambda 함수 실행)는 별도의 컨테이너를 사용하여 구현되는데, 이 마운트가 있어야 그러한 기능을 사용할 수 있습니다
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      # 초기 설정
+      - "./init/docker-entrypoint-initaws.d:/etc/localstack/init/ready.d"
+      - "./init/main.tf:/etc/localstack/init/ready.d/main.tf"
